@@ -26,7 +26,27 @@ namespace MongoPractice.Controllers
         {
             var db = _mongoDBService.Connection(Util._localConStr, "Practice");
             var collection = db.GetCollection<BsonDocument>("Guitar");
-            return View();
+            //Use MQL
+            //var filter = "{Make:{$gt:Gretsch}";
+            //var result = collection.Find(filter).FirstOrDefault();
+
+            //Use BsonDocument
+            //var filter = new BsonDocument("Make", new BsonDocument("$gt", "Gretsch"));
+            //var result = collection.Find(filter).FirstOrDefault();
+
+            //Complex BsonDocument Obj
+            //var filter1 = new BsonDocument("$and", new BsonArray{ 
+            // new BsonDocument("Price", new BsonDocument("$gt", 299)),
+            // new BsonDocument("Price", new BsonDocument("$lt", 600))
+            //});
+            //var result1 = collection.Find(filter1).ToList();
+
+            //Use Builder Class
+            var builder = Builders<BsonDocument>.Filter;
+            var filter2 = builder.Gt("Price", 299) & builder.Lt("Price", 600);
+            var result2 = collection.Find(filter2).ToList();
+
+            return Ok(result2.ToJson());
         }
 
         /// <summary>
