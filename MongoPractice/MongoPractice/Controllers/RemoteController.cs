@@ -29,7 +29,7 @@ namespace MongoPractice.Controllers
             var collection = db.GetCollection<BsonDocument>("movies");
 
             var result = collection.Find("{title: 'Blacksmith Scene'}").FirstOrDefault();
-            return Json(result.ToJson());
+            return Ok(result.ToJson());
         }
 
         /// <summary>
@@ -57,7 +57,21 @@ namespace MongoPractice.Controllers
             return Ok(HttpUtility.HtmlDecode(text));
         }
 
+        /// <summary>
+        /// 非同步
+        /// </summary>
+        /// <param name="cancellation"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> GetMovie(CancellationToken cancellation = default)
+        {
 
+            var db = _mongoDBService.Connection(Util._remoteConStr, "sample_mflix");
+            var collection = db.GetCollection<BsonDocument>("movies");
+
+            var result = await collection.Find("{title: 'Blacksmith Scene'}").FirstOrDefaultAsync();
+            return Ok(result.ToJson());
+        }
 
     }
 }
